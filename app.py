@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from pytrends.request import TrendReq
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -8,13 +9,11 @@ def get_trends():
     pytrends = TrendReq(hl='de', tz=360)
 
     try:
-        # Alternative Methode: Google Trends "Heute"-Suchanfragen abrufen
-        trends = pytrends.today_searches()
+        # Manuelle Anfrage ohne pn-Parameter
+        trends = pytrends.trending_searches()
+        trending_list = trends[0].tolist()
 
-        # Konvertiere die Daten in eine Liste
-        trending_list = trends.tolist()
-
-        return jsonify({"today_searches": trending_list})
+        return jsonify({"trending_searches": trending_list})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
