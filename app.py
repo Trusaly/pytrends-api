@@ -7,9 +7,13 @@ app = Flask(__name__)
 def get_trends():
     pytrends = TrendReq(hl='de', tz=360)
     
-    # Lade die aktuellen Trending Searches für Deutschland
-    trends = pytrends.trending_searches(pn="germany")
-    
+    try:
+        # Versuche, die Trending Searches für Deutschland zu holen
+        trends = pytrends.trending_searches(pn="germany")
+    except:
+        # Falls es fehlschlägt, verwende die globalen Trends als Fallback
+        trends = pytrends.trending_searches(pn="united_states")
+
     # Konvertiere das DataFrame in eine Liste
     trending_list = trends[0].tolist()  
 
