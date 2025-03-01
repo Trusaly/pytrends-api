@@ -6,18 +6,18 @@ app = Flask(__name__)
 @app.route('/trends', methods=['GET'])
 def get_trends():
     pytrends = TrendReq(hl='de', tz=360)
-    
+
     try:
-        # Versuche, die Trending Searches für Deutschland zu holen
-        trends = pytrends.trending_searches(pn="germany")
-    except:
-        # Falls es fehlschlägt, verwende die globalen Trends als Fallback
-        trends = pytrends.trending_searches(pn="united_states")
+        # Alternative Methode: Google Trends "Heute"-Suchanfragen abrufen
+        trends = pytrends.today_searches()
 
-    # Konvertiere das DataFrame in eine Liste
-    trending_list = trends[0].tolist()  
+        # Konvertiere die Daten in eine Liste
+        trending_list = trends.tolist()
 
-    return jsonify({"trending_searches": trending_list})
+        return jsonify({"today_searches": trending_list})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=10000)
